@@ -6,7 +6,8 @@
     <meta name="theme-color" content="#ec4899">
     <meta name="description" content="GK Store - Exclusive Video Marketplace">
     
-    <!-- PWA Manifest will be created dynamically -->
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json" id="manifest-link">
     
     <title>GK Store - Video Marketplace</title>
     
@@ -1791,7 +1792,7 @@
                                 <span id="user-name">John Doe</span>
                             </div>
                             <div class="flex justify-between">
-                                <span class="text-zinc-400" id="email-label">Email</span>
+                                <span class="text-zinc-400" id="email-label-profile">Email</span>
                                 <span id="user-email">john@example.com</span>
                             </div>
                             <div class="flex justify-between">
@@ -2127,17 +2128,17 @@
                 <form id="book-form" onsubmit="submitBookRequest(event)">
                     <div class="input-group">
                         <label class="input-label" id="your-full-name-label">Your Full Name</label>
-                        <input type="text" class="input" placeholder="Enter your name" required>
+                        <input type="text" class="input" id="book-name" placeholder="Enter your name" required>
                     </div>
                     
                     <div class="input-group">
                         <label class="input-label" id="whatsapp-number-label">WhatsApp Number</label>
-                        <input type="tel" class="input" placeholder="+93 793066322" required>
+                        <input type="tel" class="input" id="book-whatsapp" placeholder="+93 793066322" required>
                     </div>
                     
                     <div class="input-group">
                         <label class="input-label" id="additional-notes-label">Additional Notes (Optional)</label>
-                        <textarea class="input textarea" placeholder="Any special requests or questions..."></textarea>
+                        <textarea class="input textarea" id="book-notes" placeholder="Any special requests or questions..."></textarea>
                     </div>
                 </form>
             </div>
@@ -2508,58 +2509,6 @@
         </div>
     </div>
 
-    <!-- Inline Manifest JSON -->
-    <script id="manifest-script" type="application/json">
-    {
-        "name": "GK Store",
-        "short_name": "GK Store",
-        "description": "Exclusive Video Marketplace",
-        "start_url": "https://shamsahmadzai06.github.io/GkStore/",
-        "scope": "https://shamsahmadzai06.github.io/GkStore/",
-        "display": "standalone",
-        "background_color": "#000000",
-        "theme_color": "#ec4899",
-        "orientation": "portrait",
-        "icons": [
-            {
-                "src": "https://shamsahmadzai06.github.io/GkStore/android-launchericon-192-192.png",
-                "sizes": "192x192",
-                "type": "image/png",
-                "purpose": "any maskable"
-            },
-            {
-                "src": "https://shamsahmadzai06.github.io/GkStore/android-launchericon-192-192.png",
-                "sizes": "512x512",
-                "type": "image/png",
-                "purpose": "any maskable"
-            }
-        ],
-        "categories": ["entertainment", "shopping", "social"],
-        "shortcuts": [
-            {
-                "name": "Browse Videos",
-                "short_name": "Videos",
-                "description": "Browse premium video content",
-                "url": "https://shamsahmadzai06.github.io/GkStore/#home",
-                "icons": [{
-                    "src": "https://shamsahmadzai06.github.io/GkStore/android-launchericon-192-192.png",
-                    "sizes": "96x96"
-                }]
-            },
-            {
-                "name": "Premium Accounts",
-                "short_name": "Accounts",
-                "description": "Browse premium accounts",
-                "url": "https://shamsahmadzai06.github.io/GkStore/#accounts",
-                "icons": [{
-                    "src": "https://shamsahmadzai06.github.io/GkStore/android-launchericon-192-192.png",
-                    "sizes": "96x96"
-                }]
-            }
-        ]
-    }
-    </script>
-
     <script>
         // PWA Variables
         let deferredPrompt;
@@ -2638,7 +2587,7 @@
                 'premium-member-text': 'Premium Member',
                 'account-info-title': 'Account Information',
                 'name-label': 'Name',
-                'email-label': 'Email',
+                'email-label-profile': 'Email',
                 'member-since-label': 'Member Since',
                 'account-type-label': 'Account Type',
                 'account-type': 'Premium',
@@ -2792,7 +2741,7 @@
                 'premium-member-text': 'پریمیم غړی',
                 'account-info-title': 'د اکاؤنټ معلومات',
                 'name-label': 'نوم',
-                'email-label': 'ایمیل',
+                'email-label-profile': 'ایمیل',
                 'member-since-label': 'له نیټې څخه غړی',
                 'account-type-label': 'د اکاؤنټ ډول',
                 'account-type': 'پریمیم',
@@ -2904,7 +2853,7 @@
             loadPreferences();
             loadSampleData();
             setupEventListeners();
-            setupDynamicManifest();
+            setupManifest();
             
             // Apply language
             applyLanguage(appState.language);
@@ -2937,30 +2886,62 @@
             pages.forEach(p => p.classList.add('hidden'));
         }
 
-        // Setup dynamic manifest
-        function setupDynamicManifest() {
-            const manifestScript = document.getElementById('manifest-script');
-            if (manifestScript) {
-                const manifestText = manifestScript.textContent;
-                try {
-                    const manifest = JSON.parse(manifestText);
-                    const blob = new Blob([manifestText], {type: 'application/json'});
-                    const manifestURL = URL.createObjectURL(blob);
-                    
-                    // Update manifest link
-                    const manifestLink = document.querySelector('link[rel="manifest"]');
-                    if (manifestLink) {
-                        manifestLink.href = manifestURL;
+        // Setup manifest
+        function setupManifest() {
+            const manifest = {
+                "name": "GK Store",
+                "short_name": "GK Store",
+                "description": "Exclusive Video Marketplace",
+                "start_url": ".",
+                "scope": ".",
+                "display": "standalone",
+                "background_color": "#000000",
+                "theme_color": "#ec4899",
+                "orientation": "portrait",
+                "icons": [
+                    {
+                        "src": "https://shamsahmadzai06.github.io/GkStore/android-launchericon-192-192.png",
+                        "sizes": "192x192",
+                        "type": "image/png",
+                        "purpose": "any maskable"
+                    },
+                    {
+                        "src": "https://shamsahmadzai06.github.io/GkStore/android-launchericon-192-192.png",
+                        "sizes": "512x512",
+                        "type": "image/png",
+                        "purpose": "any maskable"
                     }
-                    
-                    // Clean up URL after page load
-                    window.addEventListener('load', () => {
-                        setTimeout(() => URL.revokeObjectURL(manifestURL), 1000);
-                    });
-                } catch (e) {
-                    console.error('Error parsing manifest:', e);
-                }
-            }
+                ],
+                "categories": ["entertainment", "shopping", "social"],
+                "shortcuts": [
+                    {
+                        "name": "Browse Videos",
+                        "short_name": "Videos",
+                        "description": "Browse premium video content",
+                        "url": "./#home",
+                        "icons": [{
+                            "src": "https://shamsahmadzai06.github.io/GkStore/android-launchericon-192-192.png",
+                            "sizes": "96x96"
+                        }]
+                    },
+                    {
+                        "name": "Premium Accounts",
+                        "short_name": "Accounts",
+                        "description": "Browse premium accounts",
+                        "url": "./#accounts",
+                        "icons": [{
+                            "src": "https://shamsahmadzai06.github.io/GkStore/android-launchericon-192-192.png",
+                            "sizes": "96x96"
+                        }]
+                    }
+                ]
+            };
+            
+            // Create manifest link
+            const manifestLink = document.createElement('link');
+            manifestLink.rel = 'manifest';
+            manifestLink.href = URL.createObjectURL(new Blob([JSON.stringify(manifest)], {type: 'application/json'}));
+            document.head.appendChild(manifestLink);
         }
 
         // Close welcome modal and show login
@@ -2991,14 +2972,20 @@
                 });
                 
                 self.addEventListener('fetch', event => {
-                    // Cache-first strategy
+                    // Network-first strategy for better UX
                     event.respondWith(
-                        caches.match(event.request)
+                        fetch(event.request)
                             .then(response => {
-                                if (response) {
-                                    return response;
-                                }
-                                return fetch(event.request);
+                                // Cache the response for future use
+                                const responseClone = response.clone();
+                                caches.open('gk-store-v1').then(cache => {
+                                    cache.put(event.request, responseClone);
+                                });
+                                return response;
+                            })
+                            .catch(() => {
+                                // If network fails, try cache
+                                return caches.match(event.request);
                             })
                     );
                 });
@@ -3030,14 +3017,14 @@
                     showInstallButton();
                 }
                 
-                // Auto show install prompt after 5 seconds if user hasn't installed
+                // Auto show install prompt after 3 seconds if user hasn't installed
                 setTimeout(() => {
                     if (deferredPrompt && !isStandalone && localStorage.getItem('pwaInstallShown') !== 'true') {
                         console.log('Auto-showing install prompt');
                         showPWAInstallPrompt();
                         localStorage.setItem('pwaInstallShown', 'true');
                     }
-                }, 5000);
+                }, 3000);
             });
             
             // Listen for appinstalled event
@@ -3092,7 +3079,7 @@
             } else if (isStandalone) {
                 showToast('info', 'Already Installed', 'App is already installed on your device.');
             } else {
-                showToast('info', 'Installation Info', 'Installation option will appear when all PWA criteria are met. Try refreshing the page.');
+                showToast('info', 'Installation Info', 'Installation option will appear when all PWA criteria are met.');
             }
         }
 
@@ -3316,7 +3303,7 @@
                     activityItem.className = 'flex items-center justify-between p-3 bg-surface-light rounded-lg';
                     activityItem.innerHTML = `
                         <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full ${request.status === 'pending' ? 'bg-warning' : 'bg-success'} flex items-center justify-content: center;">
+                            <div class="w-8 h-8 rounded-full ${request.status === 'pending' ? 'bg-warning' : 'bg-success'} flex items-center justify-center;">
                                 <i class="fas fa-bookmark text-white text-xs"></i>
                             </div>
                             <div>
@@ -3500,9 +3487,9 @@
             const statsElement = document.getElementById('video-stats');
             if (statsElement) {
                 statsElement.innerHTML = `
-                    <span>${video.views.toLocaleString()} ${getTranslation('views', appState.language)}</span>
+                    <span>${video.views.toLocaleString()} views</span>
                     <span>•</span>
-                    <span>${video.likes.toLocaleString()} ${getTranslation('likes', appState.language)}</span>
+                    <span>${video.likes.toLocaleString()} likes</span>
                     <span>•</span>
                     <span>${video.duration}</span>
                 `;
@@ -3514,16 +3501,6 @@
             videoSection.style.background = 'linear-gradient(135deg, #ec4899, #8b5cf6)';
             videoSection.style.backgroundSize = 'cover';
             videoSection.style.backgroundPosition = 'center';
-        }
-
-        // Helper function to get translation
-        function getTranslation(key, lang) {
-            const translationsMap = {
-                'views': { en: 'views', ps: 'لیدونه', fa: 'بازدید', ar: 'مشاهدة', hi: 'व्यूज', ur: 'ویوز' },
-                'likes': { en: 'likes', ps: 'خوښونې', fa: 'لایک', ar: 'إعجاب', hi: 'लाइक्स', ur: 'لائکس' }
-            };
-            
-            return translationsMap[key]?.[lang] || translationsMap[key]?.en || key;
         }
 
         // Navigate videos
@@ -3539,7 +3516,7 @@
 
         // Toggle video playback
         function toggleVideoPlayback() {
-            showToast('success', getTranslation('Video Playback', appState.language), getTranslation('Playback toggled (demo mode)', appState.language));
+            showToast('success', 'Video Playback', 'Playback toggled (demo mode)');
         }
 
         // Load video grid
@@ -3651,7 +3628,7 @@
                         <button class="btn btn-sm ${account.sold ? 'btn-secondary' : 'btn-primary'}" 
                                 onclick="viewAccount(${account.id})" 
                                 ${account.sold ? 'disabled' : ''}>
-                            ${account.sold ? getTranslation('Sold', appState.language) : getTranslation('View Details', appState.language)}
+                            ${account.sold ? 'Sold' : 'View Details'}
                         </button>
                     </div>
                 `;
@@ -3683,7 +3660,7 @@
                 }
             });
             
-            showToast('info', getTranslation('Filter Applied', appState.language), `${tier} ${getTranslation('accounts', appState.language)}`);
+            showToast('info', 'Filter Applied', `${tier} accounts`);
         }
 
         // View account details
@@ -3712,19 +3689,19 @@
                 if (adminDashboard) {
                     adminDashboard.classList.remove('hidden');
                 }
-                showToast('success', getTranslation('Admin Login', appState.language), getTranslation('Successfully logged in as admin', appState.language));
+                showToast('success', 'Admin Login', 'Successfully logged in as admin');
                 passwordInput.value = '';
                 
                 updateAdminStats();
             } else {
-                showToast('error', getTranslation('Admin Login', appState.language), getTranslation('Incorrect password', appState.language));
+                showToast('error', 'Admin Login', 'Incorrect password');
             }
         }
 
         // Show upload video modal
         function showUploadVideo() {
             if (!appState.isAdminLoggedIn) {
-                showToast('error', getTranslation('Access Denied', appState.language), getTranslation('Please login as admin first', appState.language));
+                showToast('error', 'Access Denied', 'Please login as admin first');
                 return;
             }
             
@@ -3909,7 +3886,7 @@
             event.preventDefault();
             
             if (!appState.isAdminLoggedIn) {
-                showToast('error', getTranslation('Access Denied', appState.language), getTranslation('Please login as admin first', appState.language));
+                showToast('error', 'Access Denied', 'Please login as admin first');
                 return;
             }
             
@@ -3927,12 +3904,12 @@
             
             // Validation
             if (!id || !title || !price || !tier || !file) {
-                showToast('error', getTranslation('Validation Error', appState.language), 'Please fill all required fields and select a video file');
+                showToast('error', 'Validation Error', 'Please fill all required fields and select a video file');
                 return;
             }
             
             if (appState.videos.some(v => v.id === id)) {
-                showToast('error', getTranslation('Duplicate ID', appState.language), 'Video ID already exists. Please use a unique ID.');
+                showToast('error', 'Duplicate ID', 'Video ID already exists. Please use a unique ID.');
                 return;
             }
             
@@ -4076,7 +4053,7 @@
         // Show manage videos modal
         function showManageVideos() {
             if (!appState.isAdminLoggedIn) {
-                showToast('error', getTranslation('Access Denied', appState.language), getTranslation('Please login as admin first', appState.language));
+                showToast('error', 'Access Denied', 'Please login as admin first');
                 return;
             }
             
@@ -4162,7 +4139,7 @@
         // Show book requests modal
         function showBookRequests() {
             if (!appState.isAdminLoggedIn) {
-                showToast('error', getTranslation('Access Denied', appState.language), getTranslation('Please login as admin first', appState.language));
+                showToast('error', 'Access Denied', 'Please login as admin first');
                 return;
             }
             
@@ -4266,7 +4243,7 @@
         // Show manage settings modal
         function showManageSettings() {
             if (!appState.isAdminLoggedIn) {
-                showToast('error', getTranslation('Access Denied', appState.language), getTranslation('Please login as admin first', appState.language));
+                showToast('error', 'Access Denied', 'Please login as admin first');
                 return;
             }
             
@@ -4292,7 +4269,7 @@
                 document.getElementById('payment-address').textContent = newUsdtAddress;
             }
             
-            showToast('success', getTranslation('Settings Saved', appState.language), getTranslation('Admin settings have been updated', appState.language));
+            showToast('success', 'Settings Saved', 'Admin settings have been updated');
             closeModal('manage-settings-modal');
         }
 
@@ -4320,7 +4297,7 @@
                 notificationItem.innerHTML = `
                     <div class="card-body">
                         <div class="flex items-start gap-3">
-                            <div class="w-10 h-10 rounded-full bg-${notification.color} flex items-center justify-content: center;">
+                            <div class="w-10 h-10 rounded-full bg-${notification.color} flex items-center justify-center;">
                                 <i class="${notification.icon} text-white"></i>
                             </div>
                             <div class="flex-1">
@@ -4404,7 +4381,7 @@
             
             closeModal('language-modal');
             
-            showToast('success', getTranslation('Language Updated', appState.language), getTranslation('Language preference saved', appState.language));
+            showToast('success', 'Language Updated', 'Language preference saved');
         }
 
         // Toggle theme
@@ -4414,7 +4391,7 @@
             
             document.documentElement.setAttribute('data-theme', appState.theme);
             
-            showToast('success', getTranslation('Theme Updated', appState.language), `${getTranslation('Switched to', appState.language)} ${appState.theme} ${getTranslation('mode', appState.language)}`);
+            showToast('success', 'Theme Updated', `Switched to ${appState.theme} mode`);
         }
 
         // Show toast notification
@@ -4475,7 +4452,7 @@
                     url: window.location.href
                 });
             } else {
-                showToast('info', getTranslation('Share', appState.language), `Copy link to share: ${window.location.href}`);
+                showToast('info', 'Share', `Copy link to share: ${window.location.href}`);
             }
         }
 
@@ -4494,13 +4471,14 @@
         function submitBookRequest(event) {
             if (event) event.preventDefault();
             
-            const form = document.getElementById('book-form');
-            if (!form) return;
+            const name = document.getElementById('book-name').value;
+            const whatsapp = document.getElementById('book-whatsapp').value;
+            const notes = document.getElementById('book-notes').value;
             
-            const formData = new FormData(form);
-            const name = formData.get('name') || 'Not provided';
-            const whatsapp = formData.get('whatsapp') || 'Not provided';
-            const notes = formData.get('notes') || 'No additional notes';
+            if (!name || !whatsapp) {
+                showToast('error', 'Validation Error', 'Please fill all required fields');
+                return;
+            }
             
             const bookRequest = {
                 id: appState.bookRequests.length + 1,
@@ -4519,9 +4497,13 @@
             
             console.log('Book request submitted:', bookRequest);
             
-            showToast('success', getTranslation('Request Submitted', appState.language), getTranslation('We will contact you shortly on WhatsApp', appState.language));
+            showToast('success', 'Request Submitted', 'We will contact you shortly on WhatsApp');
             closeModal('book-modal');
-            form.reset();
+            
+            // Reset form
+            document.getElementById('book-name').value = '';
+            document.getElementById('book-whatsapp').value = '';
+            document.getElementById('book-notes').value = '';
             
             if (appState.isAdminLoggedIn) {
                 updateAdminStats();
@@ -4534,10 +4516,10 @@
             if (address) {
                 navigator.clipboard.writeText(address.textContent)
                     .then(() => {
-                        showToast('success', getTranslation('Address Copied', appState.language), getTranslation('USDT address copied to clipboard', appState.language));
+                        showToast('success', 'Address Copied', 'USDT address copied to clipboard');
                     })
                     .catch(() => {
-                        showToast('error', getTranslation('Copy Failed', appState.language), getTranslation('Could not copy address', appState.language));
+                        showToast('error', 'Copy Failed', 'Could not copy address');
                     });
             }
         }
@@ -4548,10 +4530,10 @@
             if (address) {
                 navigator.clipboard.writeText(address.textContent)
                     .then(() => {
-                        showToast('success', getTranslation('Address Copied', appState.language), getTranslation('Payment address copied to clipboard', appState.language));
+                        showToast('success', 'Address Copied', 'Payment address copied to clipboard');
                     })
                     .catch(() => {
-                        showToast('error', getTranslation('Copy Failed', appState.language), getTranslation('Could not copy address', appState.language));
+                        showToast('error', 'Copy Failed', 'Could not copy address');
                     });
             }
         }
@@ -4559,7 +4541,7 @@
         // Open WhatsApp
         function openWhatsApp() {
             const phone = '+93793066322';
-            const message = encodeURIComponent(getTranslation('Hello, I need support with GK Store', appState.language));
+            const message = encodeURIComponent('Hello, I need support with GK Store');
             window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
         }
 
@@ -4569,10 +4551,10 @@
             
             const phone = '+93793066322';
             const message = encodeURIComponent(
-                `${getTranslation('Hello, I want to buy:', appState.language)} ${appState.currentAccount.title}\n` +
-                `${getTranslation('Tier:', appState.language)} ${appState.currentAccount.tier}\n` +
-                `${getTranslation('Price:', appState.language)} $${appState.currentAccount.price}\n` +
-                `${getTranslation('Please provide payment confirmation.', appState.language)}`
+                `Hello, I want to buy: ${appState.currentAccount.title}\n` +
+                `Tier: ${appState.currentAccount.tier}\n` +
+                `Price: $${appState.currentAccount.price}\n` +
+                `Please provide payment confirmation.`
             );
             
             window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
@@ -4587,7 +4569,7 @@
             
             console.log('Contact message:', Object.fromEntries(formData));
             
-            showToast('success', getTranslation('Message Sent', appState.language), getTranslation('We will respond within 24 hours', appState.language));
+            showToast('success', 'Message Sent', 'We will respond within 24 hours');
             form.reset();
         }
 
@@ -4596,7 +4578,7 @@
             appState.isLoggedIn = false;
             appState.currentUser = null;
             localStorage.removeItem('gkStoreUser');
-            showToast('info', getTranslation('Logged Out', appState.language), getTranslation('You have been logged out', appState.language));
+            showToast('info', 'Logged Out', 'You have been logged out');
             showPage('auth');
         }
 
@@ -4646,8 +4628,13 @@
                 // Update user stats
                 appState.userStats.onlineUsers++;
                 
+                // Update profile page
+                document.getElementById('user-name').textContent = user.name;
+                document.getElementById('user-email').textContent = user.email;
+                document.getElementById('member-since').textContent = user.createdAt;
+                
                 // Show success message
-                showToast('success', getTranslation('Login Successful', appState.language), `Welcome back, ${user.name}!`);
+                showToast('success', 'Login Successful', `Welcome back, ${user.name}!`);
                 
                 // Redirect to home
                 showPage('home');
@@ -4655,7 +4642,7 @@
                 // Reset form
                 document.getElementById('login-form').reset();
             } else {
-                showToast('error', getTranslation('Login Failed', appState.language), getTranslation('Invalid email or password', appState.language));
+                showToast('error', 'Login Failed', 'Invalid email or password');
             }
         }
 
@@ -4670,18 +4657,18 @@
             
             // Validation
             if (password !== confirmPassword) {
-                showToast('error', getTranslation('Signup Failed', appState.language), getTranslation('Passwords do not match', appState.language));
+                showToast('error', 'Signup Failed', 'Passwords do not match');
                 return;
             }
             
             if (password.length < 6) {
-                showToast('error', getTranslation('Signup Failed', appState.language), getTranslation('Password must be at least 6 characters', appState.language));
+                showToast('error', 'Signup Failed', 'Password must be at least 6 characters');
                 return;
             }
             
             // Check if user already exists
             if (appState.users.some(u => u.email === email)) {
-                showToast('error', getTranslation('Signup Failed', appState.language), getTranslation('User with this email already exists', appState.language));
+                showToast('error', 'Signup Failed', 'User with this email already exists');
                 return;
             }
             
@@ -4710,8 +4697,13 @@
             // Save to localStorage
             localStorage.setItem('gkStoreUser', JSON.stringify(newUser));
             
+            // Update profile page
+            document.getElementById('user-name').textContent = newUser.name;
+            document.getElementById('user-email').textContent = newUser.email;
+            document.getElementById('member-since').textContent = newUser.createdAt;
+            
             // Show success message
-            showToast('success', getTranslation('Account Created', appState.language), `Welcome to GK Store, ${name}!`);
+            showToast('success', 'Account Created', `Welcome to GK Store, ${name}!`);
             
             // Redirect to home
             showPage('home');
@@ -4732,13 +4724,13 @@
             if (user) {
                 // In a real app, you would send a reset email here
                 // For demo, just show success message
-                showToast('success', getTranslation('Reset Link Sent', appState.language), getTranslation('Check your email for password reset instructions', appState.language));
+                showToast('success', 'Reset Link Sent', 'Check your email for password reset instructions');
                 
                 // Reset form and go back to login
                 document.getElementById('forgot-password-form').reset();
                 showLoginForm();
             } else {
-                showToast('error', getTranslation('Reset Failed', appState.language), getTranslation('No account found with this email', appState.language));
+                showToast('error', 'Reset Failed', 'No account found with this email');
             }
         }
 
@@ -4776,8 +4768,13 @@
             // Save to localStorage
             localStorage.setItem('gkStoreUser', JSON.stringify(existingUser));
             
+            // Update profile page
+            document.getElementById('user-name').textContent = existingUser.name;
+            document.getElementById('user-email').textContent = existingUser.email;
+            document.getElementById('member-since').textContent = existingUser.createdAt;
+            
             // Show success message
-            showToast('success', getTranslation('Login Successful', appState.language), `Welcome, ${existingUser.name}!`);
+            showToast('success', 'Login Successful', `Welcome, ${existingUser.name}!`);
             
             // Redirect to home
             showPage('home');
@@ -4785,12 +4782,12 @@
 
         // Show terms
         function showTerms() {
-            showToast('info', getTranslation('Terms of Service', appState.language), getTranslation('This is a demo app. Terms will be implemented in production.', appState.language));
+            showToast('info', 'Terms of Service', 'This is a demo app. Terms will be implemented in production.');
         }
 
         // Show privacy
         function showPrivacy() {
-            showToast('info', getTranslation('Privacy Policy', appState.language), getTranslation('This is a demo app. Privacy policy will be implemented in production.', appState.language));
+            showToast('info', 'Privacy Policy', 'This is a demo app. Privacy policy will be implemented in production.');
         }
 
         // Initialize app when DOM is loaded
