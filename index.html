@@ -6,8 +6,8 @@
     <meta name="theme-color" content="#ec4899">
     <meta name="description" content="GK Store - Exclusive Video Marketplace">
     
-    <!-- Use inline manifest to avoid separate file -->
-    <link rel="manifest" href="data:application/manifest+json;base64,ewogICJuYW1lIjogIkdLIFN0b3JlIiwKICAic2hvcnRfbmFtZSI6ICJHSyBTdG9yZSIsCiAgImRlc2NyaXB0aW9uIjogIkV4Y2x1c2l2ZSBWaWRlbyBNYXJrZXRwbGFjZSIsCiAgInN0YXJ0X3VybCI6ICIuIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjMDAwMDAwIiwKICAidGhlbWVfY29sb3IiOiAiI2VjNDg5OSIsCiAgIm9yaWVudGF0aW9uIjogImFueSIsCiAgImNhdGVnb3JpZXMiOiBbImJ1c2luZXNzIiwgInNvY2lhbCIsICJwcm9kdWN0aXZpdHkiXSwKICAiaWNvbnMiOiBbCiAgICB7CiAgICAgICJzcmMiOiAiYW5kcm9pZC1sYXVuY2hlcmljb24tMTkyLTE5Mi5wbmciLAogICAgICAic2l6ZXMiOiAiMTkyeDE5MiIsCiAgICAgICJ0eXBlIjogImltYWdlL3BuZyIKICAgIH0sCiAgICB7CiAgICAgICJzcmMiOiAiYW5kcm9pZC1sYXVuY2hlcmljb24tNTEyLTUxMi5wbmciLAogICAgICAic2l6ZXMiOiAiNTEyeDUxMiIsCiAgICAgICJ0eXBlIjogImltYWdlL3BuZyIKICAgIH0KICBdLAogICJzY3JlZW5zIjogWwogICAgewogICAgICAic3JjIjogInNwbGFzaC0xOTIweDEwODAucG5nIiwKICAgICAgInNpemVzIjogIjE5MjB4MTA4MCIsCiAgICAgICJ0eXBlIjogImltYWdlL3BuZyIsCiAgICAgICJmb3JtX2ZhY3RvciI6ICIyLjAiCiAgICB9CiAgXQp9">
+    <!-- Use static manifest.json file -->
+    <link rel="manifest" href="/manifest.json">
     
     <title>GK Store - Video Marketplace</title>
     
@@ -2894,7 +2894,7 @@
             
             // Register service worker if supported
             if ('serviceWorker' in navigator) {
-                // Register service worker from inline script
+                // Register service worker from a separate file (or inline)
                 registerServiceWorker();
             }
             
@@ -2945,94 +2945,60 @@
 
         // Register Service Worker
         function registerServiceWorker() {
-            // Create a blob for the service worker script
+            navigator.serviceWorker.register('/sw.js').then(registration => {
+                console.log('Service Worker registered with scope:', registration.scope);
+            }).catch(error => {
+                console.log('Service Worker registration failed:', error);
+                
+                // Fallback to creating an inline service worker if file not found
+                createInlineServiceWorker();
+            });
+        }
+
+        // Create inline service worker as fallback
+        function createInlineServiceWorker() {
+            // Create a simple inline service worker
             const swScript = `
-                self.addEventListener('install', (event) => {
-                    console.log('Service Worker: Installing...');
-                    event.waitUntil(
-                        caches.open('gk-store-v1').then((cache) => {
-                            console.log('Service Worker: Caching App Shell');
-                            return cache.addAll([
-                                './',
-                                './index.html',
-                                './android-launchericon-192-192.png',
-                                './android-launchericon-512-512.png'
-                            ]);
-                        })
-                    );
+                self.addEventListener('install', event => {
+                    console.log('Service Worker installing...');
                     self.skipWaiting();
                 });
-
-                self.addEventListener('activate', (event) => {
-                    console.log('Service Worker: Activating...');
-                    event.waitUntil(
-                        caches.keys().then((keyList) => {
-                            return Promise.all(keyList.map((key) => {
-                                if (key !== 'gk-store-v1') {
-                                    console.log('Service Worker: Removing old cache', key);
-                                    return caches.delete(key);
-                                }
-                            }));
-                        })
-                    );
+                
+                self.addEventListener('activate', event => {
+                    console.log('Service Worker activating...');
                     return self.clients.claim();
                 });
-
-                self.addEventListener('fetch', (event) => {
+                
+                self.addEventListener('fetch', event => {
+                    // Network-first strategy for better UX
                     event.respondWith(
-                        caches.match(event.request).then((response) => {
-                            return response || fetch(event.request).then((fetchResponse) => {
-                                return caches.open('gk-store-v1').then((cache) => {
-                                    if (event.request.method === 'GET') {
-                                        cache.put(event.request, fetchResponse.clone());
-                                    }
-                                    return fetchResponse;
+                        fetch(event.request)
+                            .then(response => {
+                                // Cache the response for future use
+                                const responseClone = response.clone();
+                                caches.open('gk-store-v1').then(cache => {
+                                    cache.put(event.request, responseClone);
                                 });
-                            }).catch(() => {
-                                // Return offline page or fallback content
-                                if (event.request.headers.get('accept').includes('text/html')) {
-                                    return caches.match('./index.html');
-                                }
-                            });
-                        })
+                                return response;
+                            })
+                            .catch(() => {
+                                // If network fails, try cache
+                                return caches.match(event.request);
+                            })
                     );
                 });
-
-                self.addEventListener('message', (event) => {
-                    if (event.data && event.data.type === 'SKIP_WAITING') {
-                        self.skipWaiting();
-                    }
-                });
             `;
-
-            try {
-                const blob = new Blob([swScript], { type: 'application/javascript' });
-                const swURL = URL.createObjectURL(blob);
-                
-                navigator.serviceWorker.register(swURL)
-                    .then((registration) => {
-                        console.log('Service Worker registered with scope:', registration.scope);
-                        URL.revokeObjectURL(swURL);
-                        
-                        // Check for updates
-                        if (registration.waiting) {
-                            console.log('New service worker waiting to activate');
-                        }
-                        
-                        if (registration.installing) {
-                            console.log('Service worker installing');
-                        }
-                        
-                        if (registration.active) {
-                            console.log('Service worker active');
-                        }
-                    })
-                    .catch((error) => {
-                        console.log('Service Worker registration failed:', error);
-                    });
-            } catch (error) {
-                console.error('Error creating service worker:', error);
-            }
+            
+            // Create blob URL for inline service worker
+            const blob = new Blob([swScript], { type: 'application/javascript' });
+            const swURL = URL.createObjectURL(blob);
+            
+            navigator.serviceWorker.register(swURL).then(registration => {
+                console.log('Inline Service Worker registered with scope:', registration.scope);
+                URL.revokeObjectURL(swURL);
+            }).catch(error => {
+                console.log('Inline Service Worker registration failed:', error);
+            });
         }
 
         // Show install button
