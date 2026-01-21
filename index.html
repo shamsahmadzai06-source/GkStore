@@ -13,8 +13,8 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="application-name" content="GK Store">
     
-    <!-- Inline Web App Manifest (Base64 encoded) -->
-    <link rel="manifest" href="data:application/manifest+json;base64,ewogICJuYW1lIjogIkdLIFN0b3JlIiwKICAic2hvcnRfbmFtZSI6ICJHSyBTdG9yZSIsCiAgImRlc2NyaXB0aW9uIjogIkV4Y2x1c2l2ZSBWaWRlbyBNYXJrZXRwbGFjZSIsCiAgInN0YXJ0X3VybCI6ICIuIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjMDAwMDAwIiwKICAidGhlbWVfY29sb3IiOiAiI2VjNDg5OSIsCiAgIm9yaWVudGF0aW9uIjogImFueSIsCiAgInNjb3BlIjogIi4iLAogICJsYW5nIjogImVuLVVTIiwKICAiaWNvbnMiOiBbCiAgICB7CiAgICAgICJzcmMiOiAiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCNGJXeHVjejBpYUhSMGNEb3ZMM2QzZHk1M015NXZjbWN2TWpBd01DOXpkbWNpSUhacFpYZENiM2c5SWpBZ01DQTFNREFnTURBaUlITjBjbTlyWlQwaWJtOXVaU0lnZUQwaU1UQXdNREF3TUNJZ2VUMGlNVEJtSWlCNVBTSXhPQzR3TURBd01EQWlMejQ4TDNOMlp6ND0iLAogICAgICAic2l6ZXMiOiAiMTkyeDE5MiIsCiAgICAgICJ0eXBlIjogImltYWdlL3N2Zyt4bWwiLAogICAgICAicHVycG9zZSI6ICJhbnkgbWFzayFibGUiCiAgICB9LAogICAgewogICAgICAic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsUEhOMlp5QjRiV3h1Y3owaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNQzl6ZG1jaUlIWnBaWGRDYjNnOUlqQWdNQ0ExTURBZ01DQWlJSE4wY205clpUMGlibTl1WlNJZ2VEc2lNVEF3TURBd01DSWdlVDBpTVRCbUlpQjVQU0l4T0M0d01EQXdNREFpTHo0OEwzTjJaejQ9IiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9zdmcreG1sIiwKICAgICAgInB1cnBvc2UiOiAiYW55IG1hc2thYmxlIgogICAgfQogIF0KfQ==">
+    <!-- Web App Manifest with correct icon paths -->
+    <link rel="manifest" href="icons.json">
     
     <title>GK Store - Video Marketplace</title>
     
@@ -22,10 +22,24 @@
     <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iMjQiIGZpbGw9InVybCgjcGFpbnQwX2xpbmVhcikiLz4KPHRleHQgeD0iOTYiIHk9IjExMiIgZm9udC1mYW1pbHk9IkFyaWFsIEJsYWNrIiBmb250LXNpemU9IjgwIiBmb250LXdlaWdodD0iOTAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSI+R0s8L3RleHQ+CjxkZWZzPgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50MF9saW5lYXIiIHgxPSIwIiB5MT0iMCIgeDI9IjE5MiIgeTI9IjE5MiIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSIjRUM0ODk5Ii8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzhCNUM2NiIvPgo8L2xpbmVhckdyYWRpZW50Pgo8L2RlZnM+Cjwvc3ZnPgo=">
     
     <!-- iOS PWA Icons -->
-    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiByeD0iNjQiIGZpbGw9InVybCgjcGFpbnQwX2xpbmVhcikiLz4KPHRleHQgeD0iMjU2IiB5PSIyOTYiIGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjayIgZm9udC1zaXplPSIxMjgiIGZvbnQtd2VpZ2h0PSI5MDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IndoaXRlIj5HSzwvdGV4dD4KPGRlZnM+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQwX2xpbmVhciIgeDE9IjAiIHkxPSIwIiB4Mj0iNTEyIiB5Mj0iNTEyIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiNFQzQ4OTkiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjOEI1QzY2Ii8+CjwvbGluZWFyR3JhZGllbnQ+CjwvZGVmcz4KPC9zdmc+Cg==">
+    <link rel="apple-touch-icon" sizes="57x57" href="android-launchericon-72-72.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="android-launchericon-72-72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="android-launchericon-96-96.png">
+    <link rel="apple-touch-icon" sizes="96x96" href="android-launchericon-96-96.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="android-launchericon-144-144.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="android-launchericon-144-144.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="android-launchericon-144-144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="android-launchericon-192-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="android-launchericon-192-192.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="android-launchericon-192-192.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="android-launchericon-512-512.png">
+    
+    <!-- Android PWA Icons -->
+    <link rel="icon" sizes="192x192" href="android-launchericon-192-192.png">
+    <link rel="icon" sizes="512x512" href="android-launchericon-512-512.png">
     
     <!-- Splash Screens for iOS -->
-    <link rel="apple-touch-startup-image" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzA3IiBoZWlnaHQ9IjQ3NyIgdmlld0JveD0iMCAwIDMwNyA0NzciIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDciIGhlaWdodD0iNDc3IiBmaWxsPSJ1cmwoI3BhaW50MF9saW5lYXIpIi8+Cjx0ZXh0IHg9IjE1My41IiB5PSIyMzguNSIgZm9udC1mYW1pbHk9IkFyaWFsIEJsYWNrIiBmb250LXNpemU9IjgwIiBmb250LXdlaWdodD0iOTAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSI+R0s8L3RleHQ+CjxkZWZzPgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50MF9saW5lYXIiIHgxPSIwIiB5MT0iMCIgeDI9IjMwNyIgeTI9IjQ3NyIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSIjRUM0ODk5Ii8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzhCNUM2NiIvPgo8L2xpbmVhckdyYWRpZW50Pgo8L2RlZnM+Cjwvc3ZnPgo=" media="(device-width: 307px) and (device-height: 477px) and (-webkit-device-pixel-ratio: 1)">
+    <link rel="apple-touch-startup-image" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzA3IiBoZWlnaHQ9IjQ3NyIgdmlld0JveD0iMCAwIDMwNyA0NzciIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDciIGhlaWdodD0iNDc3IiBmaWxsPSJ1cmwoI3BhaW50MF9saW5lYXIpIi8+Cjx0ZXh0IHg9IjE1My41IiB5PSIyMzguNSIgZm9udC1mYW1pbHk9IkFyaWFsIEJsYWNrIiBmb250LXNpemU9IjgwIiBmb250LXdlaWdodD0iOTAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSI+R0s8L3RleHQ+CjxkZWZzPgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50MF9saW5lYXIiIHgxPSIwIiB5MT0iMCIgeDI9IjMwNyIgeTI9IjQ3NyIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25VzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiNFQzQ4OTkiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjOEI1QzY2Ii8+CjwvbGluZWFyR3JhZGllbnQ+CjwvZGVmcz4KPC9zdmc+Cg==" media="(device-width: 307px) and (device-height: 477px) and (-webkit-device-pixel-ratio: 1)">
     <link rel="apple-touch-startup-image" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzQ4IiBoZWlnaHQ9IjExMjQiIHZpZXdCb3g9IjAgMCA3NDggMTEyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9Ijc0OCIgaGVpZ2h0PSIxMTI0IiBmaWxsPSJ1cmwoI3BhaW50MF9saW5lYXIpIi8+Cjx0ZXh0IHg9IjM3NCIgeT0iNTYyIiBmb250LWZhbWlseT0iQXJpYWwgQmxhY2siIGZvbnQtc2l6ZT0iMTI4IiBmb250LXdlaWdodD0iOTAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSI+R0s8L3RleHQ+CjxkZWZzPgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50MF9saW5lYXIiIHgxPSIwIiB5MT0iMCIgeDI9Ijc0OCIgeTI9IjExMjQiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iI0VDNDg5OSIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiM4QjVDNjYiLz4KPC9saW5lYXJHcmFkaWVudD4KPC9kZWZzPgo8L3N2Zz4K" media="(device-width: 374px) and (device-height: 1124px) and (-webkit-device-pixel-ratio: 2)">
     
     <!-- Font Awesome -->
@@ -2961,7 +2975,13 @@
                     const CACHE_NAME = 'gk-store-v2';
                     const urlsToCache = [
                         '/',
-                        './index.html'
+                        './index.html',
+                        './android-launchericon-72-72.png',
+                        './android-launchericon-96-96.png',
+                        './android-launchericon-144-144.png',
+                        './android-launchericon-192-192.png',
+                        './android-launchericon-512-512.png',
+                        './icons.json'
                     ];
 
                     // Install event
