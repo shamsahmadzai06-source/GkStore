@@ -47,31 +47,36 @@ body {
   gap: 15px;
 }
 
-/* LOGIN/SIGNUP TABS */
+.auth-card h2 {
+  text-align: center;
+  color: #38bdf8;
+}
+
+/* LOGIN / SIGNUP TABS */
 .auth-tabs {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 15px;
+  justify-content: space-around;
+  margin-bottom: 10px;
 }
 
 .auth-tabs button {
   flex: 1;
-  padding: 10px;
+  padding: 10px 0;
   border-radius: 12px;
   border: none;
+  cursor: pointer;
+  font-weight: bold;
   background: #0f1626;
   color: #fff;
-  font-weight: bold;
-  cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .auth-tabs button.active {
-  background: linear-gradient(135deg,#38bdf8,#0ea5e9);
+  background: linear-gradient(135deg, #38bdf8, #0ea5e9);
   color: #020617;
 }
 
-/* FORM INPUTS */
+/* INPUTS & BUTTONS */
 .auth-card input {
   padding: 12px;
   border-radius: 12px;
