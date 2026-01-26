@@ -16,6 +16,9 @@ let adminPass = localStorage.getItem("adminPass") || "admin123";
 ========================= */
 const authScreen = document.getElementById("authScreen");
 const loginBtn = document.getElementById("loginBtn");
+const authName = document.getElementById("authName");
+const authEmail = document.getElementById("authEmail");
+const authPhone = document.getElementById("authPhone");
 const app = document.getElementById("app");
 
 const videoFeed = document.getElementById("videoFeed");
@@ -96,7 +99,7 @@ loginBtn.onclick = () => {
   updateProfile();
   loadHomeVideos();
   updateAdminStats();
-}
+};
 
 /* =========================
    PROFILE
@@ -356,7 +359,7 @@ changePassBtn.onclick = () => {
   adminPass = newPass.value;
   localStorage.setItem("adminPass", adminPass);
   alert("Password changed");
-}
+};
 
 /* =========================
    INIT
