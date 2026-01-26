@@ -16,9 +16,6 @@ let adminPass = localStorage.getItem("adminPass") || "admin123";
 ========================= */
 const authScreen = document.getElementById("authScreen");
 const loginBtn = document.getElementById("loginBtn");
-const authName = document.getElementById("authName");
-const authEmail = document.getElementById("authEmail");
-const authPhone = document.getElementById("authPhone");
 const app = document.getElementById("app");
 
 const videoFeed = document.getElementById("videoFeed");
@@ -99,7 +96,7 @@ loginBtn.onclick = () => {
   updateProfile();
   loadHomeVideos();
   updateAdminStats();
-};
+}
 
 /* =========================
    PROFILE
@@ -140,6 +137,11 @@ function loadHomeVideos() {
   if (videos.length === 0) return;
 
   videos.forEach(v => {
+    // Ensure video URL is valid (use GitHub raw or hosted link)
+    if (!v.url.startsWith("http")) {
+      console.warn("Invalid video URL, skipping:", v.url);
+      return;
+    }
     const clone = createVideo(v, true);
     videoFeed.appendChild(clone);
   });
@@ -172,6 +174,7 @@ function openTier(tier) {
   noTierVideos.classList.add("hidden");
 
   tierVideos.forEach(v => {
+    if (!v.url.startsWith("http")) return;
     const clone = createVideo(v, false);
     tierVideosContainer.appendChild(clone);
   });
@@ -343,6 +346,7 @@ uploadVideoBtn.onclick = () => {
     return;
   }
 
+  // Convert to Object URL for local preview
   const url = URL.createObjectURL(file);
   videos.push({ id, title, price, tier, url });
   localStorage.setItem("videos", JSON.stringify(videos));
@@ -359,7 +363,7 @@ changePassBtn.onclick = () => {
   adminPass = newPass.value;
   localStorage.setItem("adminPass", adminPass);
   alert("Password changed");
-};
+}
 
 /* =========================
    INIT
