@@ -13,7 +13,7 @@ const FILES = [
   "./android-launchericon-512-512.png"
 ];
 
-// Install Event
+// Install event: cache all files
 self.addEventListener("install", e => {
   e.waitUntil(
     caches.open(CACHE).then(c => c.addAll(FILES))
@@ -21,22 +21,21 @@ self.addEventListener("install", e => {
   self.skipWaiting();
 });
 
-// Activate Event
+// Activate event: delete old caches
 self.addEventListener("activate", e => {
   e.waitUntil(
     caches.keys().then(keys =>
       Promise.all(
-        keys.filter(k => k !== CACHE).map(k => caches.delete(k))
+        keys.filter(key => key !== CACHE).map(key => caches.delete(key))
       )
     )
   );
   self.clients.claim();
 });
 
-// Fetch Event
+// Fetch event: respond with cache first, then network
 self.addEventListener("fetch", e => {
   if (e.request.method !== "GET") return;
-
   e.respondWith(
     caches.match(e.request).then(r => r || fetch(e.request))
   );
