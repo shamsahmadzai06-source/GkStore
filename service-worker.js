@@ -1,4 +1,4 @@
-const CACHE_NAME = "gk-store-v9";
+const CACHE_NAME = "gk-store-v10";
 const APP_SHELL = [
   "/",
   "/index.html",
@@ -10,11 +10,10 @@ const APP_SHELL = [
   "/android-launchericon-96-96.png",
   "/android-launchericon-144-144.png",
   "/android-launchericon-192-192.png",
-  "/android-launchericon-512-512.png",
-  "/icons/icon-512-maskable.png"
+  "/android-launchericon-512-512.png"
 ];
 
-const VIDEO_CACHE = "gk-store-videos-v9";
+const VIDEO_CACHE = "gk-store-videos-v10";
 
 /* =========================
    INSTALL
