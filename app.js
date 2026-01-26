@@ -2,8 +2,6 @@
    GLOBAL DATA
 ========================= */
 const ADMIN_USDT = "TXxxxxADMINADDRESS";
-
-/* ✅ IMPORTANT: your real GitHub Pages link */
 const APP_LINK = "https://shamsahmadzai06-source.github.io/GKStore/";
 
 let users = JSON.parse(localStorage.getItem("users")) || [];
@@ -18,6 +16,17 @@ let adminPass = localStorage.getItem("adminPass") || "admin123";
 ========================= */
 const authScreen = document.getElementById("authScreen");
 const loginBtn = document.getElementById("loginBtn");
+const signupBtn = document.getElementById("signupBtn");
+const tabLogin = document.getElementById("tabLogin");
+const tabSignup = document.getElementById("tabSignup");
+const loginForm = document.getElementById("loginForm");
+const signupForm = document.getElementById("signupForm");
+
+const loginPhone = document.getElementById("loginPhone");
+const signupName = document.getElementById("signupName");
+const signupEmail = document.getElementById("signupEmail");
+const signupPhone = document.getElementById("signupPhone");
+
 const app = document.getElementById("app");
 
 const videoFeed = document.getElementById("videoFeed");
@@ -29,16 +38,6 @@ const tierVideosContainer = document.getElementById("tierVideos");
 const tierTitle = document.getElementById("tierTitle");
 const noTierVideos = document.getElementById("noTierVideos");
 const backToAccount = document.getElementById("backToAccount");
-
-const buyPopup = document.getElementById("buyPopup");
-const popupTitle = document.getElementById("popupTitle");
-const usdtText = document.getElementById("usdtText");
-const usdtAddress = document.getElementById("usdtAddress");
-const copyUSDT = document.getElementById("copyUSDT");
-const buyerName = document.getElementById("buyerName");
-const buyerWhats = document.getElementById("buyerWhats");
-const confirmBtn = document.getElementById("confirmBtn");
-const cancelBtn = document.getElementById("cancelBtn");
 
 const profileName = document.getElementById("profileName");
 const profileEmail = document.getElementById("profileEmail");
@@ -76,7 +75,6 @@ const installBtn = document.getElementById("installBtn");
    PWA INSTALL PROMPT
 ========================= */
 let deferredPrompt;
-
 window.addEventListener("beforeinstallprompt", e => {
   e.preventDefault();
   deferredPrompt = e;
@@ -93,7 +91,6 @@ installBtn.onclick = async () => {
 
 /* =========================
    SERVICE WORKER
-   ✅ FIXED FOR GITHUB PAGES
 ========================= */
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker
@@ -103,24 +100,59 @@ if ("serviceWorker" in navigator) {
 }
 
 /* =========================
+   LOGIN / SIGNUP TABS
+========================= */
+tabLogin.onclick = () => {
+  tabLogin.classList.add("active");
+  tabSignup.classList.remove("active");
+  loginForm.classList.remove("hidden");
+  signupForm.classList.add("hidden");
+};
+
+tabSignup.onclick = () => {
+  tabSignup.classList.add("active");
+  tabLogin.classList.remove("active");
+  signupForm.classList.remove("hidden");
+  loginForm.classList.add("hidden");
+};
+
+/* =========================
    LOGIN
 ========================= */
 loginBtn.onclick = () => {
-  const name = authName.value.trim();
-  const email = authEmail.value.trim();
-  const phone = authPhone.value.trim();
+  const phone = loginPhone.value.trim();
+  if (!phone) return alert("Enter WhatsApp Number");
 
-  if (!name || !email || !phone) {
-    alert("Fill Name, Email and WhatsApp");
-    return;
-  }
+  const user = users.find(u => u.phone === phone);
+  if (!user) return alert("User not found, please signup");
 
-  if (!users.find(u => u.phone === phone)) {
-    users.push({ name, email, phone });
-    localStorage.setItem("users", JSON.stringify(users));
-  }
+  currentUser = user;
+  localStorage.setItem("currentUser", JSON.stringify(currentUser));
 
-  currentUser = { name, email, phone };
+  authScreen.classList.add("hidden");
+  app.classList.remove("hidden");
+
+  updateProfile();
+  loadHomeVideos();
+  updateAdminStats();
+};
+
+/* =========================
+   SIGNUP
+========================= */
+signupBtn.onclick = () => {
+  const name = signupName.value.trim();
+  const email = signupEmail.value.trim();
+  const phone = signupPhone.value.trim();
+
+  if (!name || !email || !phone) return alert("Fill all fields");
+  if (users.find(u => u.phone === phone)) return alert("User already exists");
+
+  const newUser = { name, email, phone };
+  users.push(newUser);
+  localStorage.setItem("users", JSON.stringify(users));
+
+  currentUser = newUser;
   localStorage.setItem("currentUser", JSON.stringify(currentUser));
 
   authScreen.classList.add("hidden");
@@ -168,15 +200,11 @@ navAdmin.onclick = () => showPage("admin");
 function loadHomeVideos() {
   videoFeed.innerHTML = "";
   if (!videos.length) return;
-
-  videos.forEach(v => {
-    const el = createVideo(v, true);
-    videoFeed.appendChild(el);
-  });
+  videos.forEach(v => videoFeed.appendChild(createVideo(v, true)));
 }
 
 /* =========================
-   TIER
+   TIER PAGES
 ========================= */
 tierButtons.forEach(btn => {
   btn.onclick = () => openTier(btn.dataset.tier);
@@ -225,7 +253,7 @@ function createVideo(video, vertical) {
 }
 
 /* =========================
-   BUY / BOOK
+   BUY / BOOK POPUPS
 ========================= */
 function openBuy(video) {
   showPopup("Buy Video", true, video);
@@ -235,29 +263,39 @@ function openBook(video) {
 }
 
 function showPopup(title, showUSDT, video) {
-  buyPopup.classList.remove("hidden");
-  popupTitle.textContent = title;
-  usdtText.style.display = showUSDT ? "block" : "none";
-  usdtAddress.style.display = showUSDT ? "block" : "none";
-  copyUSDT.style.display = showUSDT ? "block" : "none";
-
-  confirmBtn.onclick = () => confirmAction(showUSDT, video);
-}
-
-cancelBtn.onclick = () => buyPopup.classList.add("hidden");
-
-function confirmAction(isBuy, video) {
-  if (!buyerName.value || !buyerWhats.value) {
-    alert("Fill all fields");
-    return;
+  let buyPopup = document.getElementById("buyPopup");
+  if (!buyPopup) {
+    buyPopup = document.createElement("div");
+    buyPopup.id = "buyPopup";
+    buyPopup.className = "popup hidden";
+    buyPopup.innerHTML = `
+      <div class="popup-box">
+        <h3 id="popupTitle">${title}</h3>
+        <div id="usdtText">Send USDT:</div>
+        <div id="usdtAddress">${ADMIN_USDT}</div>
+        <input id="buyerName" placeholder="Your Name">
+        <input id="buyerWhats" placeholder="WhatsApp Number">
+        <button id="confirmBtn">Confirm</button>
+        <button id="cancelBtn">Cancel</button>
+      </div>`;
+    document.body.appendChild(buyPopup);
+    document.getElementById("cancelBtn").onclick = () => buyPopup.classList.add("hidden");
   }
 
-  const req = {
-    videoTitle: video.title,
-    name: buyerName.value,
-    whatsapp: buyerWhats.value,
-    date: Date.now()
-  };
+  buyPopup.classList.remove("hidden");
+  document.getElementById("popupTitle").textContent = title;
+  document.getElementById("usdtText").style.display = showUSDT ? "block" : "none";
+  document.getElementById("usdtAddress").style.display = showUSDT ? "block" : "none";
+
+  document.getElementById("confirmBtn").onclick = () => confirmAction(showUSDT, video);
+}
+
+function confirmAction(isBuy, video) {
+  const name = document.getElementById("buyerName").value.trim();
+  const whatsapp = document.getElementById("buyerWhats").value.trim();
+  if (!name || !whatsapp) return alert("Fill all fields");
+
+  const req = { videoTitle: video.title, name, whatsapp, date: Date.now() };
 
   if (isBuy) {
     buyRequests.push(req);
@@ -269,9 +307,9 @@ function confirmAction(isBuy, video) {
     alert("Admin will contact you");
   }
 
-  buyPopup.classList.add("hidden");
-  buyerName.value = "";
-  buyerWhats.value = "";
+  document.getElementById("buyPopup").classList.add("hidden");
+  document.getElementById("buyerName").value = "";
+  document.getElementById("buyerWhats").value = "";
 }
 
 /* =========================
@@ -287,7 +325,7 @@ function shareApp() {
 }
 
 /* =========================
-   ADMIN
+   ADMIN PANEL
 ========================= */
 adminLoginBtn.onclick = () => {
   if (adminPassInput.value === adminPass) {
