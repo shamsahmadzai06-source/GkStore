@@ -11,7 +11,7 @@ body {
   background: #020617;
   color: #fff;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  overflow: hidden;
+  overflow: hidden; /* main feed hidden, pages scroll separately */
 }
 
 /* ===============================
@@ -21,7 +21,7 @@ body {
   height: 100vh;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding-bottom: 80px;
+  padding-bottom: 80px; /* bottom nav safe space */
 }
 
 /* ===============================
@@ -253,6 +253,14 @@ video {
 /* ===============================
    ADMIN
 ================================ */
+.admin-box {
+  background: #020617;
+  border: 1px solid #334155;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
 #admin input,
 #admin select {
   width: 100%;
@@ -302,8 +310,7 @@ video {
   width: 85%;
 }
 
-.popup-box input,
-.popup-box button {
+.popup-box input, .popup-box button {
   width: 100%;
   padding: 10px;
   margin-top: 10px;
@@ -329,9 +336,9 @@ video {
 ================================ */
 .install-btn {
   position: fixed;
-  bottom: 70px;
-  right: 15px;
-  padding: 12px 20px;
+  bottom: 80px;
+  right: 20px;
+  padding: 14px 22px;
   background: linear-gradient(135deg,#38bdf8,#0ea5e9);
   color: #020617;
   border-radius: 12px;
@@ -339,6 +346,7 @@ video {
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
+  z-index: 999;
 }
 
 .install-btn:hover {
