@@ -139,5 +139,36 @@
   </div>
 
   <script src="app.js"></script>
+  <script>
+    // =========================
+    // PWA INSTALL PROMPT
+    // =========================
+    let deferredPrompt;
+    const installBtn = document.querySelector(".install-btn");
+
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.style.display = "block";
+    });
+
+    installBtn.addEventListener("click", async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log("User choice:", outcome);
+      deferredPrompt = null;
+      installBtn.style.display = "none";
+    });
+
+    // =========================
+    // REGISTER SERVICE WORKER
+    // =========================
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js")
+        .then(reg => console.log("SW registered", reg))
+        .catch(err => console.error("SW failed", err));
+    }
+  </script>
 </body>
 </html>
