@@ -5,7 +5,6 @@ const APP_SHELL = [
   "/style.css",
   "/app.js",
   "/manifest.json",
-  "/android-launchericon-48-48.png",
   "/android-launchericon-72-72.png",
   "/android-launchericon-96-96.png",
   "/android-launchericon-144-144.png",
@@ -33,7 +32,9 @@ self.addEventListener("activate", event => {
     caches.keys().then(keys =>
       Promise.all(
         keys.map(key => {
-          if (![CACHE_NAME, VIDEO_CACHE].includes(key)) return caches.delete(key);
+          if (![CACHE_NAME, VIDEO_CACHE].includes(key)) {
+            return caches.delete(key);
+          }
         })
       )
     )
