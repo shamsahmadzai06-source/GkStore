@@ -3661,7 +3661,7 @@
             return `${baseUrl}/storage/v1/object/public/${bucket}/${fileName}`;
         }
 
-        // FIXED UPLOAD VIDEO FUNCTION
+        // FIXED UPLOAD VIDEO FUNCTION - SIMPLIFIED VERSION
         async function uploadVideo() {
             if (!appState.isAdminLoggedIn) {
                 showToast('error', 'Access Denied', 'Please login as admin first');
@@ -3721,7 +3721,11 @@
                 uploadedSize.textContent = '0 MB';
                 totalSize.textContent = formatFileSize(file.size);
                 
-                // REAL UPLOAD with progress tracking
+                // Create FormData for upload
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('fileName', fileName);
+                
                 console.log('Starting upload to Supabase:', {
                     bucket: supabaseBucket,
                     fileName: fileName,
@@ -3734,87 +3738,116 @@
                 uploadPercentage.textContent = '50%';
                 uploadedSize.textContent = formatFileSize(file.size / 2);
                 
-                const { data, error } = await supabase.storage
-                    .from(supabaseBucket)
-                    .upload(fileName, file, {
-                        cacheControl: '3600',
-                        upsert: false
-                    });
+                // UPLOAD TO SUPABASE USING XHR FOR PROGRESS TRACKING
+                const xhr = new XMLHttpRequest();
                 
-                if (error) {
-                    console.error('Supabase upload error:', error);
-                    throw new Error(`Upload failed: ${error.message}`);
-                }
+                // Set up progress tracking
+                xhr.upload.addEventListener('progress', (e) => {
+                    if (e.lengthComputable) {
+                        const percentage = Math.round((e.loaded * 100) / e.total);
+                        uploadProgress.style.width = percentage + '%';
+                        uploadPercentage.textContent = percentage + '%';
+                        uploadedSize.textContent = formatFileSize(e.loaded);
+                    }
+                });
                 
-                console.log('Upload successful:', data);
-                
-                // Update progress to 100%
-                uploadProgress.style.width = '100%';
-                uploadPercentage.textContent = '100%';
-                uploadedSize.textContent = formatFileSize(file.size);
-                
-                // Generate and show URL
-                const generatedUrl = generateVideoUrl(fileName);
-                document.getElementById('generated-url').textContent = generatedUrl;
-                document.getElementById('url-generator').classList.add('active');
-                
-                // Create new video object
-                const newVideo = {
-                    id: id,
-                    title: title,
-                    description: description || 'No description available',
-                    views: 0,
-                    likes: 0,
-                    shares: 0,
-                    duration: "2:30",
-                    thumbnail: "",
-                    url: generatedUrl,
-                    account: {
-                        id: appState.accounts.length + 1,
-                        title: title,
-                        tier: tier,
-                        price: price,
-                        followers: 0,
-                        thumbnail: ""
+                // Handle response
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        if (xhr.status === 200) {
+                            // Upload successful
+                            uploadProgress.style.width = '100%';
+                            uploadPercentage.textContent = '100%';
+                            uploadedSize.textContent = formatFileSize(file.size);
+                            
+                            // Generate and show URL
+                            const generatedUrl = generateVideoUrl(fileName);
+                            document.getElementById('generated-url').textContent = generatedUrl;
+                            document.getElementById('url-generator').classList.add('active');
+                            
+                            // Create new video object
+                            const newVideo = {
+                                id: id,
+                                title: title,
+                                description: description || 'No description available',
+                                views: 0,
+                                likes: 0,
+                                shares: 0,
+                                duration: "2:30",
+                                thumbnail: "",
+                                url: generatedUrl,
+                                account: {
+                                    id: appState.accounts.length + 1,
+                                    title: title,
+                                    tier: tier,
+                                    price: price,
+                                    followers: 0,
+                                    thumbnail: ""
+                                }
+                            };
+                            
+                            // Add to videos array
+                            appState.videos.unshift(newVideo);
+                            
+                            // Create corresponding account and add to accounts array
+                            const newAccount = {
+                                id: newVideo.account.id,
+                                title: newVideo.account.title,
+                                description: newVideo.description,
+                                tier: newVideo.account.tier,
+                                price: newVideo.account.price,
+                                sold: false
+                            };
+                            
+                            appState.accounts.unshift(newAccount);
+                            
+                            appState.currentVideoIndex = 0;
+                            
+                            // Update UI
+                            loadHomeContent();
+                            updateAdminStats();
+                            
+                            // Reset form
+                            setTimeout(() => {
+                                document.getElementById('upload-video-form').reset();
+                                clearFileSelection();
+                                uploadStatus.classList.remove('active');
+                                document.getElementById('url-generator').classList.remove('active');
+                                submitBtn.disabled = false;
+                                submitBtn.innerHTML = '<i class="fas fa-upload"></i> Upload Video';
+                                
+                                showToast('success', 'Upload Successful', `Video "${title}" has been uploaded and added to ${tier} tier accounts`);
+                                
+                                // Load the new video
+                                loadVideo(0);
+                                
+                            }, 2000);
+                            
+                        } else {
+                            // Upload failed
+                            console.error('Upload failed:', xhr.status, xhr.responseText);
+                            throw new Error(`Upload failed with status ${xhr.status}`);
+                        }
                     }
                 };
                 
-                // Add to videos array
-                appState.videos.unshift(newVideo);
-                
-                // Create corresponding account and add to accounts array
-                const newAccount = {
-                    id: newVideo.account.id,
-                    title: newVideo.account.title,
-                    description: newVideo.description,
-                    tier: newVideo.account.tier,
-                    price: newVideo.account.price,
-                    sold: false
+                // Handle errors
+                xhr.onerror = function() {
+                    console.error('XHR error occurred');
+                    throw new Error('Network error occurred during upload');
                 };
                 
-                appState.accounts.unshift(newAccount);
+                // Prepare upload URL for Supabase
+                const uploadUrl = `${supabaseUrl}/storage/v1/object/${supabaseBucket}/${fileName}`;
                 
-                appState.currentVideoIndex = 0;
+                // Set up headers for Supabase
+                xhr.open('POST', uploadUrl, true);
+                xhr.setRequestHeader('Authorization', `Bearer ${supabaseKey}`);
+                xhr.setRequestHeader('Content-Type', 'application/octet-stream');
+                xhr.setRequestHeader('x-upsert', 'true');
                 
-                // Update UI
-                loadHomeContent();
-                updateAdminStats();
-                
-                // Reset form
-                setTimeout(() => {
-                    document.getElementById('upload-video-form').reset();
-                    clearFileSelection();
-                    uploadStatus.classList.remove('active');
-                    document.getElementById('url-generator').classList.remove('active');
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = '<i class="fas fa-upload"></i> Upload Video';
-                    
-                    showToast('success', 'Upload Successful', `Video "${title}" has been uploaded and added to ${tier} tier accounts`);
-                    
-                    // Load the new video
-                    loadVideo(0);
-                    
-                }, 2000);
+                // Send the file
+                xhr.send(file);
                 
             } catch (error) {
                 console.error('Upload error:', error);
