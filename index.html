@@ -113,7 +113,67 @@
             to { transform: rotate(360deg); }
         }
 
-        /* REMOVED: PWA Install Button styles */
+        /* ADDED BACK: PWA Install Button styles */
+        #install-button {
+            position: fixed;
+            right: 1rem;
+            bottom: 5rem;
+            z-index: 100;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            background: var(--surface-light);
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border);
+        }
+
+        #install-button:hover {
+            background: var(--surface);
+            transform: scale(1.1);
+        }
+
+        #install-button.show {
+            display: flex;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        #install-button.hidden {
+            display: none;
+        }
+
+        /* ADDED BACK: PWA Install Modal styles */
+        #pwa-install-modal .modal {
+            max-width: 400px;
+        }
+
+        .pwa-features {
+            display: grid;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .pwa-feature-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .pwa-feature-item i {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 0.5rem;
+            background: var(--gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
         /* Offline Indicator */
         .offline-indicator {
@@ -1097,6 +1157,7 @@
             .modal { margin: 1rem; }
             .video-container { height: calc(100vh - 120px); }
             .video-top-actions { top: 40%; }
+            #install-button { right: 0.5rem; bottom: 4.5rem; }
         }
 
         @media (max-width: 480px) {
@@ -1105,6 +1166,7 @@
             .nav-item { min-width: 3rem; }
             .video-top-actions { top: 35%; right: 0.5rem; }
             .video-right-actions { right: 0.5rem; }
+            #install-button { width: 2.5rem; height: 2.5rem; }
         }
 
         /* Dark/Light Mode (Future Enhancement) */
@@ -1136,10 +1198,15 @@
             right: 1rem;
             left: auto;
         }
+        
+        body[dir="rtl"] #install-button {
+            left: 1rem;
+            right: auto;
+        }
 
         /* Print Styles */
         @media print {
-            .top-nav, .bottom-nav, .notification-bell {
+            .top-nav, .bottom-nav, .notification-bell, #install-button {
                 display: none !important;
             }
             
@@ -1358,8 +1425,6 @@
         .connection-status.error {
             color: var(--danger);
         }
-
-        /* REMOVED: PWA Install Modal styles */
 
         /* Login/Signup Specific Styles */
         .auth-container {
@@ -1976,6 +2041,11 @@
         <div id="notification-count" class="notification-badge">3</div>
     </div>
 
+    <!-- ADDED BACK: PWA Install Button -->
+    <button id="install-button" class="hidden">
+        <i class="fas fa-download"></i>
+    </button>
+
     <!-- Welcome Modal -->
     <div id="welcome-modal" class="modal-overlay">
         <div class="modal" style="max-width: 500px;">
@@ -2017,6 +2087,64 @@
                     
                     <p class="text-xs text-zinc-500 mt-4">
                         Swipe up/down or use arrow keys to navigate videos
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADDED BACK: PWA Install Modal -->
+    <div id="pwa-install-modal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-body">
+                <div class="text-center">
+                    <div class="w-20 h-20 gradient-bg rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-mobile-alt text-white text-2xl"></i>
+                    </div>
+                    
+                    <h2 class="text-2xl font-bold mb-4">Install GK Store App</h2>
+                    
+                    <p class="text-zinc-400 mb-6">
+                        Install our app for the best experience with offline access and push notifications
+                    </p>
+                    
+                    <div class="pwa-features">
+                        <div class="pwa-feature-item">
+                            <i class="fas fa-wifi-slash"></i>
+                            <div>
+                                <h4 class="font-semibold">Offline Access</h4>
+                                <p class="text-sm text-zinc-400">Use the app without internet connection</p>
+                            </div>
+                        </div>
+                        
+                        <div class="pwa-feature-item">
+                            <i class="fas fa-bell"></i>
+                            <div>
+                                <h4 class="font-semibold">Push Notifications</h4>
+                                <p class="text-sm text-zinc-400">Get instant updates about new content</p>
+                            </div>
+                        </div>
+                        
+                        <div class="pwa-feature-item">
+                            <i class="fas fa-rocket"></i>
+                            <div>
+                                <h4 class="font-semibold">Fast Loading</h4>
+                                <p class="text-sm text-zinc-400">Loads instantly like a native app</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-3">
+                        <button class="btn btn-secondary flex-1" onclick="closeModal('pwa-install-modal')">
+                            Later
+                        </button>
+                        <button class="btn btn-primary flex-1" onclick="installPWA()">
+                            <i class="fas fa-download"></i> Install Now
+                        </button>
+                    </div>
+                    
+                    <p class="text-xs text-zinc-500 mt-4">
+                        Tap <i class="fas fa-share"></i> then "Add to Home Screen"
                     </p>
                 </div>
             </div>
@@ -2413,6 +2541,10 @@
     </div>
 
     <script>
+        // ADDED BACK: PWA Installation Variables
+        let deferredPrompt;
+        let pwaInstallShown = localStorage.getItem('pwaInstallShown') === 'true';
+
         // App State Management
         const appState = {
             currentPage: 'auth',
@@ -2569,6 +2701,69 @@
                 console.log('App is running in standalone mode (PWA installed)');
                 document.body.classList.add('pwa-installed');
             }
+        }
+
+        // ADDED BACK: PWA Installation Event Listeners
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent Chrome 67 and earlier from automatically showing the prompt
+            e.preventDefault();
+            // Stash the event so it can be triggered later
+            deferredPrompt = e;
+            
+            // Show install button
+            const installButton = document.getElementById('install-button');
+            if (installButton) {
+                installButton.classList.add('show');
+                installButton.classList.remove('hidden');
+                
+                installButton.addEventListener('click', () => {
+                    showModal('pwa-install-modal');
+                });
+            }
+            
+            // Auto-show install modal on first visit
+            if (!pwaInstallShown && window.matchMedia('(display-mode: browser)').matches) {
+                setTimeout(() => {
+                    showModal('pwa-install-modal');
+                    pwaInstallShown = true;
+                    localStorage.setItem('pwaInstallShown', 'true');
+                }, 3000);
+            }
+        });
+
+        // ADDED BACK: PWA Installation Function
+        function installPWA() {
+            if (!deferredPrompt) {
+                showToast('info', 'Installation', 'Your browser does not support PWA installation');
+                return;
+            }
+            
+            // Show the install prompt
+            deferredPrompt.prompt();
+            
+            // Wait for the user to respond to the prompt
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('User accepted the install prompt');
+                    showToast('success', 'App Installing', 'GK Store is being installed...');
+                    
+                    // Hide the install button
+                    const installButton = document.getElementById('install-button');
+                    if (installButton) {
+                        installButton.classList.add('hidden');
+                        installButton.classList.remove('show');
+                    }
+                    
+                    // Close the modal
+                    closeModal('pwa-install-modal');
+                } else {
+                    console.log('User dismissed the install prompt');
+                    showToast('info', 'Installation', 'You can install the app later from the menu');
+                }
+                
+                // Clear the deferredPrompt variable
+                deferredPrompt = null;
+            });
         }
 
         // Close welcome modal and show login
